@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c1116">
+<title>OfferDesk — Never overpay. Never grade wrong.</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">OfferDesk</div>
+  <div class="tagline">Never overpay at the table. Never grade the wrong card.</div>
+</header>
+
+<main id="main">
+
+  <!-- ============ FLIP TAB ============ -->
+  <section class="tab" id="tab-flip" data-tab="flip">
+    <div class="card intro">
+      <p>One bad grade costs you <strong>$200+</strong>. Enter six numbers — know whether to grade it <em>before</em> you buy it raw.</p>
+    </div>
+
+    <div class="card">
+      <label class="field">
+        <span>Card</span>
+        <input id="f-card" type="text" placeholder="e.g. 2023 Prizm #339 Stroud Silver" autocomplete="off">
+      </label>
+      <div class="grid2">
+        <label class="field"><span>Raw price $ <em>what you'd pay</em></span><input id="f-raw" inputmode="decimal" placeholder="1500"></label>
+        <label class="field"><span>Grading cost $</span><input id="f-grading" inputmode="decimal" value="25"></label>
+      </div>
+      <div class="grid2">
+        <label class="field"><span>PSA 10 sold $</span><input id="f-p10" inputmode="decimal" placeholder="3000"></label>
+        <label class="field"><span>PSA 9 sold $</span><input id="f-p9" inputmode="decimal" placeholder="800"></label>
+      </div>
+      <div class="grid2">
+        <label class="field"><span>Sell fees %</span><input id="f-fee" inputmode="decimal" value="13"></label>
+        <label class="field"><span>Your gem rate % <em>of your subs come back 10s</em></span><input id="f-gem" inputmode="decimal" value="50"></label>
+      </div>
+      <button class="btn primary big" id="f-go">Analyze the flip</button>
+      <div class="complinks">
+        <span>Need comps?</span>
+        <button class="linkbtn" data-comp="ebay">eBay sold</button>
+        <button class="linkbtn" data-comp="130">130point</button>
+        <button class="linkbtn" data-comp="psa">PSA cert</button>
+      </div>
+    </div>
+
+    <div class="card result hidden" id="f-result">
+      <div class="verdict" id="f-verdict">—</div>
+      <div class="bignum"><span id="f-ev">$0</span><label>expected profit per card</label></div>
+      <div class="mathrows">
+        <div class="mrow"><span>If it gems (10)</span><b id="f-net10">$0</b></div>
+        <div class="mrow"><span>If it comes back a 9</span><b id="f-net9">$0</b></div>
+        <div class="mrow"><span>Break-even gem rate</span><b id="f-breakeven">—</b></div>
+      </div>
+      <p class="fine" id="f-note"></p>
+      <button class="btn ghost" id="f-save">Log to show P&amp;L</button>
+    </div>
+  </section>
+
+  <!-- ============ OFFER TAB ============ -->
+  <section class="tab hidden" id="tab-offer" data-tab="offer">
+    <div class="subtabs">
+      <button class="subtab active" data-mode="single">Single</button>
+      <button class="subtab" data-mode="lot">Lot</button>
+      <button class="subtab" data-mode="counter">Counter</button>
+    </div>
+
+    <div class="card" id="mode-single">
+      <div class="grid2">
+        <label class="field"><span>Comp $</span><input id="o-comp" inputmode="decimal" placeholder="500"></label>
+        <label class="field"><span>Margin target %</span><input id="o-margin" inputmode="decimal" value="30"></label>
+      </div>
+      <div class="grid2">
+        <label class="field"><span>Fee %</span><input id="o-fee" inputmode="decimal" value="13"></label>
+        <label class="field"><span>Shipping $</span><input id="o-ship" inputmode="decimal" value="5"></label>
+      </div>
+      <button class="btn primary big" id="o-go">Get my offer</button>
+      <div class="complinks">
+        <span>Need comps?</span>
+        <button class="linkbtn" data-comp="ebay">eBay sold</button>
+        <button class="linkbtn" data-comp="130">130point</button>
+      </div>
+      <div id="o-tiers"></div>
+    </div>
+
+    <div class="card hidden" id="mode-lot">
+      <div id="lot-rows">
+        <div class="lotrow"><input class="lot-name" placeholder="Card"><input class="lot-comp" inputmode="decimal" placeholder="$ comp"></div>
+      </div>
+      <button class="btn ghost" id="lot-add">+ Add card</button>
+      <div class="grid2" style="margin-top:12px">
+        <label class="field"><span>Fee %</span><input id="l-fee" inputmode="decimal" value="13"></label>
+        <label class="field"><span>Margin target %</span><input id="l-margin" inputmode="decimal" value="30"></label>
+      </div>
+      <button class="btn primary big" id="l-go">Offer on the lot</button>
+      <div id="l-result"></div>
+    </div>
+
+    <div class="card hidden" id="mode-counter">
+      <p class="hint">Seller countered? Enter their ask — instant math on whether to take it.</p>
+      <div class="grid2">
+        <label class="field"><span>Comp $</span><input id="c-comp" inputmode="decimal" placeholder="500"></label>
+        <label class="field"><span>Seller's ask $</span><input id="c-ask" inputmode="decimal" placeholder="400"></label>
+      </div>
+      <div class="grid2">
+        <label class="field"><span>Fee %</span><input id="c-fee" inputmode="decimal" value="13"></label>
+        <label class="field"><span>Margin target %</span><input id="c-margin" inputmode="decimal" value="30"></label>
+      </div>
+      <button class="btn primary big" id="c-go">Run the counter</button>
+      <div class="card result hidden" id="c-result" style="margin-top:12px">
+        <div class="verdict" id="c-verdict">—</div>
+        <div class="mathrows">
+          <div class="mrow"><span>Your margin at their ask</span><b id="c-marginout">—</b></div>
+          <div class="mrow"><span>Your profit at their ask</span><b id="c-profitout">—</b></div>
+          <div class="mrow"><span>Most you can pay at target</span><b id="c-maxpay">—</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PNL TAB ============ -->
+  <section class="tab hidden" id="tab-pnl" data-tab="pnl">
+    <div class="card">
+      <div class="bignum"><span id="p-net">$0</span><label>weekend profit</label></div>
+      <div class="mathrows">
+        <div class="mrow"><span>Total in (sales)</span><b id="p-in">$0</b></div>
+        <div class="mrow"><span>Total out (buys)</span><b id="p-out">$0</b></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="grid2">
+        <input id="p-card" type="text" placeholder="Card" autocomplete="off">
+        <input id="p-amt" inputmode="decimal" placeholder="$ amount">
+      </div>
+      <div class="btnrow">
+        <button class="btn warn" id="p-buy">Log buy</button>
+        <button class="btn good" id="p-sell">Log sale</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="listhead"><span>Log</span><button class="linkbtn danger" id="p-clear">Clear weekend</button></div>
+      <div id="p-list"><p class="fine">Nothing logged yet.</p></div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="tabbar">
+  <button class="tabbtn active" data-goto="flip">Flip</button>
+  <button class="tabbtn" data-goto="offer">Offer</button>
+  <button class="tabbtn" data-goto="pnl">P&amp;L</button>
+</nav>
+
+<script src="js/app.js"></script>
+</body>
+</html>
