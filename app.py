@@ -18,6 +18,16 @@ stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 USE_PG = bool(DATABASE_URL)
+
+@app.get("/css/<path:filename>")
+def css_files(filename):
+    return send_from_directory("css", filename)
+
+
+@app.get("/js/<path:filename>")
+def js_files(filename):
+    return send_from_directory("js", filename)
+
 PRICE_ID = "price_1UJcVSLqZsJQhgSSB8bPpLL6"  # OfferDesk Founding Dealer $49/mo
 FREE_FLIPS_PER_DAY = 3
 
