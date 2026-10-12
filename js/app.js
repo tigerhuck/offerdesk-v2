@@ -228,7 +228,7 @@ function renderAccount(){
 function refreshMe(){
   return api("/api/me").then(function(d){
     ME.email=d.email||null; ME.pro=!!d.pro;
-    ME.flipsLeft=(d.flips_left===null||d.flips_left===undefined)?3:d.flips_left;
+    ME.flipsLeft=(d.flips_left===null||d.flips_left===undefined)?1:d.flips_left;
     renderAccount();
   }).catch(function(){ renderAccount(); });
 }
@@ -262,13 +262,13 @@ $("a-paid").addEventListener("click",function(){ authErr("");
 });
 $("f-gopro").addEventListener("click",function(){ gotoTab("account"); });
 
-/* flip freemium gate: the pre-loaded example is always free; your own flips cost 1 of 3/day */
+/* flip freemium gate: the pre-loaded example is always free; your own flips cost 1/day */
 var flipTouched=false, flipGateTimer=null;
 function anonUseFlip(){
   try{
     var k="odpro_free_"+new Date().toISOString().slice(0,10);
     var n=parseInt(localStorage.getItem(k)||"0",10);
-    if(n>=3) return false;
+    if(n>=1) return false;
     localStorage.setItem(k,String(n+1)); return true;
   }catch(e){ return true; }
 }
