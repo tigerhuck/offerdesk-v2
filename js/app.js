@@ -206,7 +206,7 @@ $("p-sell").addEventListener("click",function(){ var a=num("p-amt"); if(!(a>0))r
 $("p-clear").addEventListener("click",function(){ if(confirm("Clear the whole weekend?")){saveLog([]);renderLog();} });
 
 /* ---------- AUTH + PRO ---------- */
-var ME={email:null,pro:false,flipsLeft:3};
+var ME={email:null,pro:false,flipsLeft:1};
 function api(path,opts){
   return fetch(path,Object.assign({headers:{"Content-Type":"application/json"},
     credentials:"same-origin"},opts||{}))
@@ -246,7 +246,7 @@ $("a-signup").addEventListener("click",function(){ authErr("");
 });
 $("a-logout").addEventListener("click",function(){
   api("/api/logout",{method:"POST"}).then(function(){
-    ME={email:null,pro:false,flipsLeft:3}; renderAccount(); });
+    ME={email:null,pro:false,flipsLeft:1}; renderAccount(); });
 });
 $("a-pro").addEventListener("click",function(){ authErr("");
   api("/api/checkout",{method:"POST",body:JSON.stringify({})}).then(function(d){
