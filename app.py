@@ -1,5 +1,5 @@
 """OfferDesk Pro — freemium grade-flip SaaS for sports card dealers.
-Free: 3 flip analyses/day. Pro ($49/mo via Stripe): unlimited.
+Free: 1 flip analysis/day. Pro ($49/mo via Stripe): unlimited.
 Serves the static frontend + JSON API. Postgres (Neon) when DATABASE_URL is set,
 else local SQLite.
 """
@@ -29,7 +29,7 @@ def js_files(filename):
     return send_from_directory("js", filename)
 
 PRICE_ID = "price_1UJcVSLqZsJQhgSSB8bPpLL6"  # OfferDesk Founding Dealer $49/mo
-FREE_FLIPS_PER_DAY = 3
+FREE_FLIPS_PER_DAY = 1
 
 
 # ---------- db ----------
