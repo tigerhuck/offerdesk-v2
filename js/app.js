@@ -205,10 +205,101 @@ $("p-sell").addEventListener("click",function(){ var a=num("p-amt"); if(!(a>0))r
   addEntry("sell",$("p-card").value.trim(),a); $("p-card").value="";$("p-amt").value=""; });
 $("p-clear").addEventListener("click",function(){ if(confirm("Clear the whole weekend?")){saveLog([]);renderLog();} });
 
+/* ---------- AUTH + PRO ---------- */
+var ME={email:null,pro:false,flipsLeft:3};
+function api(path,opts){
+  return fetch(path,Object.assign({headers:{"Content-Type":"application/json"},
+    credentials:"same-origin"},opts||{}))
+    .then(function(r){ return r.json().catch(function(){return {};}); });
+}
+function renderAccount(){
+  var out=$("acct-out"), inn=$("acct-in");
+  if(!ME.email){ out.classList.remove("hidden"); inn.classList.add("hidden"); return; }
+  out.classList.add("hidden"); inn.classList.remove("hidden");
+  $("a-who").textContent=ME.email;
+  var plan=$("a-plan");
+  plan.textContent=ME.pro?"Pro — unlimited":"Free";
+  plan.style.color=ME.pro?"var(--good)":"";
+  $("a-flips").textContent=ME.pro?"unlimited":ME.flipsLeft;
+  $("a-pro").classList.toggle("hidden",ME.pro);
+  $("a-paid").classList.toggle("hidden",ME.pro);
+  if(ME.pro) $("f-upsell").classList.add("hidden");
+}
+function refreshMe(){
+  return api("/api/me").then(function(d){
+    ME.email=d.email||null; ME.pro=!!d.pro;
+    ME.flipsLeft=(d.flips_left===null||d.flips_left===undefined)?3:d.flips_left;
+    renderAccount();
+  }).catch(function(){ renderAccount(); });
+}
+function authErr(m){ $("a-err").textContent=m||""; }
+function gotoTab(name){
+  document.querySelector('[data-goto="'+name+'"]').click();
+}
+$("a-login").addEventListener("click",function(){ authErr("");
+  api("/api/login",{method:"POST",body:JSON.stringify({email:$("a-email").value,password:$("a-pw").value})})
+    .then(function(d){ if(d.ok){$("a-pw").value="";refreshMe();} else authErr(d.error||"Login failed."); });
+});
+$("a-signup").addEventListener("click",function(){ authErr("");
+  api("/api/signup",{method:"POST",body:JSON.stringify({email:$("a-email").value,password:$("a-pw").value})})
+    .then(function(d){ if(d.ok){$("a-pw").value="";refreshMe();} else authErr(d.error||"Signup failed."); });
+});
+$("a-logout").addEventListener("click",function(){
+  api("/api/logout",{method:"POST"}).then(function(){
+    ME={email:null,pro:false,flipsLeft:3}; renderAccount(); });
+});
+$("a-pro").addEventListener("click",function(){ authErr("");
+  api("/api/checkout",{method:"POST",body:JSON.stringify({})}).then(function(d){
+    if(d.ok&&d.url) window.location=d.url; else authErr(d.error||"Checkout failed to start.");
+  });
+});
+$("a-paid").addEventListener("click",function(){ authErr("");
+  api("/api/refresh-pro",{method:"POST"}).then(function(d){
+    if(d.ok){ refreshMe();
+      if(!d.pro) authErr("No active subscription found for this email yet — make sure you checked out with the same email.");
+    } else authErr(d.error||"Refresh failed.");
+  });
+});
+$("f-gopro").addEventListener("click",function(){ gotoTab("account"); });
+
+/* flip freemium gate: the pre-loaded example is always free; your own flips cost 1 of 3/day */
+var flipTouched=false, flipGateTimer=null;
+function anonUseFlip(){
+  try{
+    var k="odpro_free_"+new Date().toISOString().slice(0,10);
+    var n=parseInt(localStorage.getItem(k)||"0",10);
+    if(n>=3) return false;
+    localStorage.setItem(k,String(n+1)); return true;
+  }catch(e){ return true; }
+}
+function gateFlip(){
+  if(ME.pro) return Promise.resolve(true);
+  if(ME.email){
+    return api("/api/flip-used",{method:"POST"}).then(function(d){
+      if(typeof d.flips_left==="number") ME.flipsLeft=d.flips_left;
+      renderAccount(); return !!d.ok;
+    }).catch(function(){ return true; });
+  }
+  return Promise.resolve(anonUseFlip());
+}
+function showFlipUpsell(){ $("f-upsell").classList.remove("hidden"); }
+$("tab-flip").addEventListener("input",function(){
+  if(ME.pro) return;
+  if(!flipTouched) flipTouched=true;
+  clearTimeout(flipGateTimer);
+  flipGateTimer=setTimeout(function(){
+    gateFlip().then(function(ok){ if(!ok) showFlipUpsell(); });
+  },3000);
+});
+if(window.location.search.indexOf("paid=1")>=0){
+  gotoTab("account");
+  setTimeout(function(){ authErr("Payment received — log in with the email you checked out with, then hit refresh."); },400);
+}
+
 /* ---------- live recalc ---------- */
 function recalcAll(){ recalcFlip(); recalcOffer(); recalcLot(); recalcCounter(); }
 document.querySelectorAll("input").forEach(function(i){
   if(!i.closest(".saleslist")&&!i.classList.contains("lot-comp")) i.addEventListener("input",recalcAll);
 });
-renderLog(); recalcAll();
+renderLog(); recalcAll(); refreshMe();
 })();

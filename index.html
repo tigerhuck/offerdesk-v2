@@ -45,6 +45,10 @@
     </div>
 
     <div class="card result" id="f-result">
+      <div class="upsell hidden" id="f-upsell">
+        <p><b>That's your 3 free flips for today.</b><br>Dealers running flips all day go Pro.</p>
+        <button class="btn primary big" id="f-gopro">Go Pro — $49/mo, unlimited flips</button>
+      </div>
       <div class="verdict" id="f-verdict">—</div>
       <div class="bignum"><span id="f-ev">$0</span><label>expected profit per card</label></div>
       <div class="mathrows">
@@ -138,12 +142,36 @@
     </div>
   </section>
 
+  <!-- ============ ACCOUNT TAB ============ -->
+  <section class="tab hidden" id="tab-account" data-tab="account">
+    <div class="card" id="acct-out">
+      <h3 style="margin:0 0 4px">Dealer account</h3>
+      <p class="fine">Free: 3 flip analyses a day. Pro: unlimited flips, <strong>$49/mo</strong>.</p>
+      <label class="field"><span>Email</span><input id="a-email" type="text" placeholder="you@shop.com" autocomplete="off"></label>
+      <label class="field"><span>Password</span><input id="a-pw" type="password" placeholder="6+ characters"></label>
+      <p class="fine" id="a-err" style="color:var(--bad)"></p>
+      <div class="btnrow">
+        <button class="btn primary" id="a-login">Log in</button>
+        <button class="btn ghost" id="a-signup">Sign up free</button>
+      </div>
+    </div>
+    <div class="card hidden" id="acct-in">
+      <div class="mrow"><span>Signed in</span><b id="a-who">—</b></div>
+      <div class="mrow"><span>Plan</span><b id="a-plan">Free</b></div>
+      <div class="mrow"><span>Flips left today</span><b id="a-flips">3</b></div>
+      <button class="btn primary big hidden" id="a-pro" style="margin-top:12px">Go Pro — $49/mo, unlimited flips</button>
+      <button class="btn ghost hidden" id="a-paid">I just paid — refresh my status</button>
+      <button class="btn ghost" id="a-logout" style="margin-top:10px">Log out</button>
+    </div>
+  </section>
+
 </main>
 
 <nav class="tabbar">
   <button class="tabbtn active" data-goto="flip">Flip</button>
   <button class="tabbtn" data-goto="offer">Offer</button>
   <button class="tabbtn" data-goto="pnl">P&amp;L</button>
+  <button class="tabbtn" data-goto="account">Account</button>
 </nav>
 
 <script src="js/app.js?v=3"></script>
