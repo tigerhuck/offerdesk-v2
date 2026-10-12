@@ -100,3 +100,19 @@ input:focus{border-color:var(--acc)}
   font-size:16px; font-weight:700; padding:12px; cursor:pointer; border-radius:10px;
 }
 .tabbtn.active{color:var(--txt); background:#1d2836}
+
+/* v3: live comp builder */
+.livehead{font-size:12px; color:var(--dim); letter-spacing:1px; margin-bottom:12px; display:flex; align-items:center; gap:8px}
+.livedot{width:8px; height:8px; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good); animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.5}}
+.salessec{margin-bottom:14px; border:1px solid var(--line); border-radius:10px; padding:10px}
+.saleshead{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px; color:var(--dim)}
+.mini{background:transparent; border:1px solid var(--line); color:var(--acc); border-radius:999px; padding:6px 12px; font-size:13px; cursor:pointer}
+.saleslist{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px}
+.saleslist input{background:#0d1319; color:var(--txt); border:1px solid var(--line); border-radius:8px; padding:10px 8px; font-size:16px; width:100%}
+.compout{margin-top:8px; font-size:14px; color:var(--dim)}
+.compout b{color:var(--good); font-size:18px}
+.compout span{font-size:12px}
+.grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px}
+.pickline{margin:10px 0 2px; font-size:15px}
+.pickline b{color:var(--good); font-size:20px}
